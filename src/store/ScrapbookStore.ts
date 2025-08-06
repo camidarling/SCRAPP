@@ -16,6 +16,9 @@ interface ScrapbookState {
   addPage: () => void
   deletePage: (pageIndex: number) => void
   updateElementPosition: (elementId: string, elementType: 'photo' | 'sticker' | 'text', position: { x: number; y: number }) => void
+  saveScrapbook: () => void
+  loadScrapbook: (scrapbookId: string) => void
+  exportScrapbook: () => Scrapbook | null
 }
 
 export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
@@ -40,6 +43,9 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
       updatedAt: new Date()
     }
     set({ currentScrapbook: newScrapbook, currentPageIndex: 0 })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${newScrapbook.id}`, JSON.stringify(newScrapbook))
   },
 
   addPhoto: (photo: Photo) => {
@@ -49,13 +55,16 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     const updatedPages = [...currentScrapbook.pages]
     updatedPages[currentPageIndex].photos.push(photo)
 
-    set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
-      }
-    })
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
+
+    set({ currentScrapbook: updatedScrapbook })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
   addSticker: (sticker: Sticker) => {
@@ -65,13 +74,16 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     const updatedPages = [...currentScrapbook.pages]
     updatedPages[currentPageIndex].stickers.push(sticker)
 
-    set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
-      }
-    })
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
+
+    set({ currentScrapbook: updatedScrapbook })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
   addTextElement: (textElement: TextElement) => {
@@ -81,13 +93,16 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     const updatedPages = [...currentScrapbook.pages]
     updatedPages[currentPageIndex].textElements.push(textElement)
 
-    set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
-      }
-    })
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
+
+    set({ currentScrapbook: updatedScrapbook })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
   setBackgroundColor: (color: string) => {
@@ -97,13 +112,16 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     const updatedPages = [...currentScrapbook.pages]
     updatedPages[currentPageIndex].backgroundColor = color
 
-    set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
-      }
-    })
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
+
+    set({ currentScrapbook: updatedScrapbook })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
   setCurrentPage: (pageIndex: number) => {
@@ -125,15 +143,19 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     const updatedPages = [...currentScrapbook.pages, newPage]
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
 
     set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
-      },
+      currentScrapbook: updatedScrapbook,
       currentPageIndex: updatedPages.length - 1
     })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
   deletePage: (pageIndex: number) => {
@@ -154,15 +176,19 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     const newCurrentPageIndex = Math.min(pageIndex, updatedPages.length - 1)
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
 
     set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
-      },
+      currentScrapbook: updatedScrapbook,
       currentPageIndex: newCurrentPageIndex
     })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
   updateElementPosition: (elementId: string, elementType: 'photo' | 'sticker' | 'text', position: { x: number; y: number }) => {
@@ -189,12 +215,45 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
       }
     }
 
-    set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
+
+    set({ currentScrapbook: updatedScrapbook })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
+  },
+
+  saveScrapbook: () => {
+    const { currentScrapbook } = get()
+    if (!currentScrapbook) return
+
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      updatedAt: new Date()
+    }
+
+    set({ currentScrapbook: updatedScrapbook })
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
+  },
+
+  loadScrapbook: (scrapbookId: string) => {
+    const savedScrapbook = localStorage.getItem(`scrapp_${scrapbookId}`)
+    if (savedScrapbook) {
+      try {
+        const scrapbook = JSON.parse(savedScrapbook)
+        set({ currentScrapbook: scrapbook, currentPageIndex: 0 })
+      } catch (error) {
+        console.error('Failed to load scrapbook:', error)
       }
-    })
+    }
+  },
+
+  exportScrapbook: () => {
+    const { currentScrapbook } = get()
+    return currentScrapbook
   }
 })) 

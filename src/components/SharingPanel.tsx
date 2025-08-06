@@ -16,7 +16,7 @@ interface SharingPanelProps {
 }
 
 const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
-  const { currentScrapbook, currentPageIndex } = useScrapbookStore()
+  const { currentScrapbook, currentPageIndex, exportScrapbook } = useScrapbookStore()
   const [isExporting, setIsExporting] = useState(false)
   const [shareType, setShareType] = useState<'page' | 'book'>('page')
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -26,22 +26,24 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
   const currentPage = currentScrapbook?.pages[currentPageIndex]
 
   const exportAsPNG = async () => {
-    if (!canvasRef.current) return
+    if (!canvasRef.current || !currentPage) return
     
     setIsExporting(true)
     try {
       const canvas = await html2canvas(canvasRef.current, {
-        backgroundColor: currentPage?.backgroundColor || '#f6f1ee',
+        backgroundColor: currentPage.backgroundColor || '#f6f1ee',
         scale: 2,
         useCORS: true,
-        allowTaint: true
+        allowTaint: true,
+        width: 800,
+        height: 800
       })
       
       // Add watermark
-      const watermarkedCanvas = addWatermark(canvas, 'Virtual Scrapbook')
+      const watermarkedCanvas = addWatermark(canvas, 'SCRAPP')
       
       const link = document.createElement('a')
-      link.download = `scrapbook-${shareType}-${Date.now()}.png`
+      link.download = `scrapp-${shareType}-${Date.now()}.png`
       link.href = watermarkedCanvas.toDataURL()
       link.click()
       
@@ -59,19 +61,21 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
   }
 
   const exportAsPDF = async () => {
-    if (!canvasRef.current) return
+    if (!canvasRef.current || !currentPage) return
     
     setIsExporting(true)
     try {
       const canvas = await html2canvas(canvasRef.current, {
-        backgroundColor: currentPage?.backgroundColor || '#f6f1ee',
+        backgroundColor: currentPage.backgroundColor || '#f6f1ee',
         scale: 2,
         useCORS: true,
-        allowTaint: true
+        allowTaint: true,
+        width: 800,
+        height: 800
       })
       
       // Add watermark
-      const watermarkedCanvas = addWatermark(canvas, 'Virtual Scrapbook')
+      const watermarkedCanvas = addWatermark(canvas, 'SCRAPP')
       
       const imgData = watermarkedCanvas.toDataURL('image/png')
       const pdf = new jsPDF('p', 'mm', 'a4')
@@ -91,7 +95,7 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
         heightLeft -= pageHeight
       }
 
-      pdf.save(`scrapbook-${shareType}-${Date.now()}.pdf`)
+      pdf.save(`scrapp-${shareType}-${Date.now()}.pdf`)
       
       // Track analytics
       trackShareEvent({
@@ -107,14 +111,53 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
   }
 
   const downloadAssets = () => {
-    // Create a zip file with all assets
+    if (!currentScrapbook || !currentPage) return
+    
+    // Create a comprehensive assets object
     const assets = {
-      photos: currentPage?.photos || [],
-      text: currentPage?.textElements || [],
-      metadata: {
-        title: currentScrapbook?.title,
-        page: currentPageIndex + 1,
-        date: new Date().toISOString()
+      scrapbook: {
+        title: currentScrapbook.title,
+        id: currentScrapbook.id,
+        createdAt: currentScrapbook.createdAt,
+        updatedAt: currentScrapbook.updatedAt,
+        totalPages: currentScrapbook.pages.length
+      },
+      currentPage: {
+        index: currentPageIndex,
+        id: currentPage.id,
+        backgroundColor: currentPage.backgroundColor,
+        photos: currentPage.photos.map(photo => ({
+          id: photo.id,
+          name: photo.name,
+          url: photo.url,
+          position: photo.position,
+          size: photo.size,
+          rotation: photo.rotation,
+          caption: photo.caption
+        })),
+        stickers: currentPage.stickers.map(sticker => ({
+          id: sticker.id,
+          name: sticker.name,
+          type: sticker.type,
+          iconUrl: sticker.iconUrl,
+          position: sticker.position,
+          size: sticker.size,
+          rotation: sticker.rotation
+        })),
+        textElements: currentPage.textElements.map(text => ({
+          id: text.id,
+          content: text.content,
+          position: text.position,
+          fontSize: text.fontSize,
+          fontFamily: text.fontFamily,
+          color: text.color,
+          rotation: text.rotation
+        }))
+      },
+      exportInfo: {
+        exportedAt: new Date().toISOString(),
+        exportType: shareType,
+        version: '1.0.0'
       }
     }
     
@@ -122,7 +165,7 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
     const dataBlob = new Blob([dataStr], { type: 'application/json' })
     const link = document.createElement('a')
     link.href = URL.createObjectURL(dataBlob)
-    link.download = `scrapbook-assets-${Date.now()}.json`
+    link.download = `scrapp-assets-${currentScrapbook.title}-${Date.now()}.json`
     link.click()
   }
 
@@ -151,7 +194,8 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
 
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href)
+      const shareText = `Check out my scrapbook "${currentScrapbook?.title || 'My Scrapbook'}" created with SCRAPP! ${window.location.href}`
+      await navigator.clipboard.writeText(shareText)
       
       // Track analytics
       trackShareEvent({
@@ -427,28 +471,31 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                     top: text.position.y,
                     fontSize: text.fontSize,
                     color: text.color,
-                    transform: `rotate(${text.rotation}deg)`
+                    transform: `rotate(${text.rotation}deg)`,
+                    fontFamily: text.fontFamily === 'coolvetica' ? 'Coolvetica' : 
+                               text.fontFamily === 'typewriter' ? 'Old Typewriter' : 
+                               text.fontFamily === 'handwriting' ? 'Sam Handwriting' : 'Coolvetica'
                   }}
                 >
                   {text.content}
                 </div>
               ))}
               
-              {currentPage.embellishments.map((embellishment) => (
+              {currentPage.stickers.map((sticker) => (
                 <div
-                  key={embellishment.id}
+                  key={sticker.id}
                   className="absolute"
                   style={{
-                    left: embellishment.position.x,
-                    top: embellishment.position.y,
-                    width: embellishment.size.width,
-                    height: embellishment.size.height,
-                    transform: `rotate(${embellishment.rotation}deg)`
+                    left: sticker.position.x,
+                    top: sticker.position.y,
+                    width: sticker.size.width,
+                    height: sticker.size.height,
+                    transform: `rotate(${sticker.rotation}deg)`
                   }}
                 >
                   <img
-                    src={embellishment.iconUrl}
-                    alt={embellishment.name}
+                    src={sticker.iconUrl}
+                    alt={sticker.name}
                     className="w-full h-full object-contain"
                   />
                 </div>
