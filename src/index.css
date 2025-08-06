@@ -1,0 +1,353 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+/* Custom Font Face Declarations */
+@font-face {
+  font-family: 'Coolvetica';
+  src: url('/fonts/Coolvetica Rg.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Coolvetica';
+  src: url('/fonts/Coolvetica Rg It.otf') format('opentype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Coolvetica';
+  src: url('/fonts/Coolvetica Rg Cond.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: condensed;
+}
+
+@font-face {
+  font-family: 'Coolvetica';
+  src: url('/fonts/Coolvetica Hv Comp.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Old Typewriter';
+  src: url('/fonts/Old Typewriter2.0.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Sam Handwriting';
+  src: url('/fonts/SamHandwriting.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Coolvetica', sans-serif;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    cursor: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDkuNzRMMTIgMTZMMTAuOTEgOS43NEw0IDlMMTAuOTEgOC4yNkwxMiAyWiIgZmlsbD0iIzNmNDczYiIvPgo8L3N2Zz4K'), auto;
+  }
+  
+  body {
+    background-color: #f6f1ee;
+    color: #3f473b;
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(158, 180, 146, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(158, 180, 146, 0.1) 0%, transparent 50%);
+    cursor: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDkuNzRMMTIgMTZMMTAuOTEgOS43NEw0IDlMMTAuOTEgOC4yNkwxMiAyWiIgZmlsbD0iIzNmNDczYiIvPgo8L3N2Zz4K'), auto;
+  }
+
+  /* Pixel-perfect borders */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Custom cursor for interactive elements */
+  button, [role="button"], .cursor-pointer {
+    cursor: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDkuNzRMMTIgMTZMMTAuOTEgOS43NEw0IDlMMTAuOTEgOC4yNkwxMiAyWiIgZmlsbD0iIzNmNDczYiIvPgo8L3N2Zz4K'), pointer;
+  }
+
+  /* SCRAPP Brand Colors */
+  :root {
+    --scrapp-primary: #3f473b;
+    --scrapp-secondary: #9eb492;
+    --scrapp-accent: #f6f1ee;
+    --scrapp-text: #3f473b;
+    --scrapp-border: #3f473b;
+  }
+}
+
+@layer components {
+  /* Ultra-clean button styles */
+  .scrapp-btn {
+    @apply px-3 py-2 border-2 text-sm font-pixel transition-all duration-200;
+    background-color: var(--scrapp-primary);
+    color: var(--scrapp-accent);
+    border-color: var(--scrapp-border);
+    cursor: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDkuNzRMMTIgMTZMMTAuOTEgOS43NEw0IDlMMTAuOTEgOC4yNkwxMiAyWiIgZmlsbD0iIzNmNDczYiIvPgo8L3N2Zz4K'), pointer;
+  }
+
+  .scrapp-btn:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 4px 8px rgba(63, 71, 59, 0.2);
+  }
+
+  .scrapp-btn:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  /* Minimal panel styles */
+  .scrapp-panel {
+    @apply p-4 border-2 rounded-lg;
+    background-color: var(--scrapp-accent);
+    border-color: var(--scrapp-border);
+    transition: all 0.2s ease;
+  }
+
+  .scrapp-panel:hover {
+    box-shadow: 0 2px 8px rgba(63, 71, 59, 0.1);
+  }
+
+  /* Icon-only buttons */
+  .scrapp-icon-btn {
+    @apply w-8 h-8 flex items-center justify-center border-2 transition-all duration-200;
+    background-color: var(--scrapp-primary);
+    color: var(--scrapp-accent);
+    border-color: var(--scrapp-border);
+    cursor: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDkuNzRMMTIgMTZMMTAuOTEgOS43NEw0IDlMMTAuOTEgOC4yNkwxMiAyWiIgZmlsbD0iIzNmNDczYiIvPgo8L3N2Zz4K'), pointer;
+  }
+
+  .scrapp-icon-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 4px rgba(63, 71, 59, 0.3);
+  }
+
+  /* SCRAPP Logo */
+  .scrapp-logo {
+    @apply font-pixel text-lg font-bold;
+    color: var(--scrapp-primary);
+    text-shadow: 2px 2px 0px rgba(158, 180, 146, 0.3);
+  }
+
+  /* Microinteractions */
+  .micro-hover {
+    transition: all 0.15s ease;
+  }
+
+  .micro-hover:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+  }
+
+  /* Page flip animations */
+  .page-flip {
+    animation: pageFlip 0.6s ease-in-out;
+  }
+
+  @keyframes pageFlip {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(-90deg); }
+    100% { transform: rotateY(0deg); }
+  }
+
+  /* Loading splash screen */
+  .scrapp-splash {
+    @apply fixed inset-0 flex items-center justify-center z-50;
+    background: linear-gradient(135deg, #f6f1ee 0%, #9eb492 100%);
+    animation: splashFade 2s ease-in-out;
+  }
+
+  @keyframes splashFade {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; visibility: hidden; }
+  }
+
+  /* Tooltip styles */
+  .scrapp-tooltip {
+    @apply absolute z-50 px-2 py-1 text-xs font-pixel rounded;
+    background-color: var(--scrapp-primary);
+    color: var(--scrapp-accent);
+    border: 1px solid var(--scrapp-border);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+  }
+
+  .scrapp-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Hidden tools reveal on hover */
+  .tools-hidden {
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s ease;
+  }
+
+  .tools-container:hover .tools-hidden {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Drag and drop feedback */
+  .dragging {
+    transform: rotate(5deg) scale(1.05);
+    box-shadow: 0 8px 16px rgba(63, 71, 59, 0.3);
+    z-index: 1000;
+  }
+
+  .drop-zone-active {
+    background-color: rgba(158, 180, 146, 0.2);
+    border: 2px dashed var(--scrapp-primary);
+    animation: pulse 1s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* SCRAPP watermark */
+  .scrapp-watermark {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    font-family: 'Coolvetica', sans-serif;
+    font-size: 12px;
+    color: rgba(63, 71, 59, 0.3);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Minimal scrollbar */
+  .scrapp-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .scrapp-scrollbar::-webkit-scrollbar-track {
+    background: var(--scrapp-accent);
+  }
+
+  .scrapp-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--scrapp-secondary);
+    border-radius: 3px;
+  }
+
+  .scrapp-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--scrapp-primary);
+  }
+
+  /* Element controls */
+  .element-controls {
+    @apply absolute top-0 right-0 flex space-x-1 p-1;
+    background-color: rgba(246, 241, 238, 0.9);
+    border: 1px solid var(--scrapp-border);
+    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+  }
+
+  .element-container:hover .element-controls {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Resize handles */
+  .resize-handle {
+    @apply absolute w-3 h-3 border-2;
+    background-color: var(--scrapp-primary);
+    border-color: var(--scrapp-border);
+    cursor: se-resize;
+  }
+
+  .resize-handle:hover {
+    background-color: var(--scrapp-secondary);
+    transform: scale(1.2);
+  }
+
+  /* Text shadow for pixel fonts */
+  .text-shadow-pixel {
+    text-shadow: 2px 2px 0px rgba(63, 71, 59, 0.3);
+  }
+
+  /* Drop shadow for elements */
+  .drop-shadow-pixel {
+    filter: drop-shadow(2px 2px 0px rgba(63, 71, 59, 0.2));
+  }
+
+  /* Font utilities */
+  .font-pixel {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
+
+  .font-terminal {
+    font-family: 'VT323', monospace;
+    font-size: 0.875rem;
+    line-height: 1.1;
+  }
+
+  .font-coolvetica {
+    font-family: 'Coolvetica', sans-serif;
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+
+  .font-coolvetica-italic {
+    font-family: 'Coolvetica', sans-serif;
+    font-style: italic;
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+
+  .font-coolvetica-condensed {
+    font-family: 'Coolvetica', sans-serif;
+    font-stretch: condensed;
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+
+  .font-coolvetica-bold {
+    font-family: 'Coolvetica', sans-serif;
+    font-weight: bold;
+    font-size: 0.875rem;
+    line-height: 1.3;
+  }
+
+  .font-typewriter {
+    font-family: 'Old Typewriter', monospace;
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  .font-handwriting {
+    font-family: 'Sam Handwriting', cursive;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  /* Retro gradient backgrounds */
+  .retro-gradient {
+    background: linear-gradient(135deg, var(--scrapp-accent) 0%, var(--scrapp-secondary) 100%);
+  }
+
+  .retro-pattern {
+    background-image: 
+      radial-gradient(circle at 25% 25%, rgba(158, 180, 146, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 75% 75%, rgba(158, 180, 146, 0.1) 0%, transparent 50%);
+  }
+} 
