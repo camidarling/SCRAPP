@@ -58,11 +58,22 @@ const ScrapbookCanvas: React.FC = () => {
 
   const handleMouseDown = (elementId: string, e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect()
-    setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    })
-    setDraggedElement(elementId)
+    const canvas = document.querySelector('.scrapbook-canvas') as HTMLElement
+    if (canvas) {
+      const canvasRect = canvas.getBoundingClientRect()
+      // Calculate offset relative to the element's position within the canvas
+      const elementLeft = rect.left - canvasRect.left
+      const elementTop = rect.top - canvasRect.top
+      setDragOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      })
+      setDraggedElement(elementId)
+    }
+  }
+
+  const handleBackgroundColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBackgroundColor(e.target.value)
   }
 
   if (!currentPage) {
@@ -94,9 +105,10 @@ const ScrapbookCanvas: React.FC = () => {
           <input
             type="color"
             value={currentPage.backgroundColor || '#f6f1ee'}
-            onChange={(e) => setBackgroundColor(e.target.value)}
-            className="w-8 h-8 border-2 rounded"
+            onChange={handleBackgroundColorChange}
+            className="w-8 h-8 border-2 rounded cursor-pointer"
             style={{ borderColor: '#3f473b' }}
+            title="Select background color"
           />
         </div>
       </div>

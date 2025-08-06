@@ -433,7 +433,11 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                 backgroundImage: `
                   radial-gradient(circle at 25% 25%, rgba(158, 180, 146, 0.1) 0%, transparent 50%),
                   radial-gradient(circle at 75% 75%, rgba(158, 180, 146, 0.1) 0%, transparent 50%)
-                `
+                `,
+                width: '800px',
+                height: '800px',
+                position: 'relative',
+                overflow: 'hidden'
               }}
             >
               {/* Render page content for export */}
@@ -446,13 +450,15 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                     top: photo.position.y,
                     width: photo.size.width,
                     height: photo.size.height,
-                    transform: `rotate(${photo.rotation}deg)`
+                    transform: `rotate(${photo.rotation}deg)`,
+                    position: 'absolute'
                   }}
                 >
                   <img
                     src={photo.url}
                     alt={photo.name}
                     className="w-full h-full object-cover"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                   {photo.caption && (
                     <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 p-2 text-xs">
@@ -474,7 +480,8 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                     transform: `rotate(${text.rotation}deg)`,
                     fontFamily: text.fontFamily === 'coolvetica' ? 'Coolvetica' : 
                                text.fontFamily === 'typewriter' ? 'Old Typewriter' : 
-                               text.fontFamily === 'handwriting' ? 'Sam Handwriting' : 'Coolvetica'
+                               text.fontFamily === 'handwriting' ? 'Sam Handwriting' : 'Coolvetica',
+                    position: 'absolute'
                   }}
                 >
                   {text.content}
@@ -490,13 +497,15 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                     top: sticker.position.y,
                     width: sticker.size.width,
                     height: sticker.size.height,
-                    transform: `rotate(${sticker.rotation}deg)`
+                    transform: `rotate(${sticker.rotation}deg)`,
+                    position: 'absolute'
                   }}
                 >
                   <img
                     src={sticker.iconUrl}
                     alt={sticker.name}
                     className="w-full h-full object-contain"
+                    style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                   />
                 </div>
               ))}
