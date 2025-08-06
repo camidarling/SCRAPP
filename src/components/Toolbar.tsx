@@ -119,7 +119,7 @@ const Toolbar: React.FC = () => {
         </div>
         
         <div className="scrapp-panel p-3">
-          <div className="grid grid-cols-3 gap-1">
+          <div className="grid grid-cols-3 gap-1 mb-2">
             {[
               { name: 'Cream', color: '#f6f1ee' },
               { name: 'Sage', color: '#9eb492' },
@@ -131,14 +131,32 @@ const Toolbar: React.FC = () => {
               <button
                 key={bg.color}
                 onClick={() => handleBackgroundChange(bg.color)}
-                className="w-8 h-8 border-2 transition-all duration-200 micro-hover"
+                className="w-8 h-8 border-2 transition-all duration-200 hover:scale-110 active:scale-95"
                 style={{ 
                   backgroundColor: bg.color, 
-                  borderColor: '#3f473b'
+                  borderColor: '#3f473b',
+                  cursor: 'pointer'
                 }}
                 title={bg.name}
               />
             ))}
+          </div>
+          
+          {/* Custom Color Picker */}
+          <div className="flex items-center space-x-2">
+            <input
+              type="color"
+              onChange={(e) => handleBackgroundChange(e.target.value)}
+              className="w-6 h-6 border-2 rounded cursor-pointer appearance-none"
+              style={{ 
+                borderColor: '#3f473b',
+                backgroundColor: '#f6f1ee'
+              }}
+              title="Custom color"
+            />
+            <span className="text-xs font-terminal" style={{ color: '#3f473b' }}>
+              CUSTOM
+            </span>
           </div>
         </div>
       </div>

@@ -102,14 +102,26 @@ const ScrapbookCanvas: React.FC = () => {
           <span className="text-xs font-terminal" style={{ color: '#3f473b' }}>
             BACKGROUND:
           </span>
-          <input
-            type="color"
-            value={currentPage.backgroundColor || '#f6f1ee'}
-            onChange={handleBackgroundColorChange}
-            className="w-8 h-8 border-2 rounded cursor-pointer"
-            style={{ borderColor: '#3f473b' }}
-            title="Select background color"
-          />
+          <div className="relative">
+            <input
+              type="color"
+              value={currentPage.backgroundColor || '#f6f1ee'}
+              onChange={handleBackgroundColorChange}
+              className="w-8 h-8 border-2 rounded cursor-pointer appearance-none"
+              style={{ 
+                borderColor: '#3f473b',
+                backgroundColor: currentPage.backgroundColor || '#f6f1ee'
+              }}
+              title="Select background color"
+            />
+            <div 
+              className="absolute inset-0 w-8 h-8 border-2 rounded pointer-events-none"
+              style={{ 
+                borderColor: '#3f473b',
+                background: `linear-gradient(45deg, ${currentPage.backgroundColor || '#f6f1ee'} 50%, transparent 50%)`
+              }}
+            />
+          </div>
         </div>
       </div>
 
