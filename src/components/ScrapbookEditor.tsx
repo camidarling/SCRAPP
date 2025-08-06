@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useScrapbookStore } from '../store/ScrapbookStore'
+import { Canvas } from '@react-three/fiber'
 import PhotoUploader from './PhotoUploader'
 import ScrapbookCanvas from './ScrapbookCanvas'
 import Toolbar from './Toolbar'
@@ -7,15 +7,20 @@ import StickerPanel from './StickerPanel'
 import PageNavigator from './PageNavigator'
 import ShareButton from './ShareButton'
 import MusicIntegration from './MusicIntegration'
+import { useScrapbookStore } from '../store/ScrapbookStore'
 
 const ScrapbookEditor: React.FC = () => {
-  const { currentScrapbook, currentPageIndex, createNewScrapbook } = useScrapbookStore()
+  const { currentScrapbook, currentPageIndex, createNewScrapbook, checkSavedData } = useScrapbookStore()
   const [showWelcome, setShowWelcome] = useState(!currentScrapbook)
 
   const handleCreateNew = () => {
-    const title = prompt('Enter scrapbook title:') || 'My Scrapbook'
-    createNewScrapbook(title)
+    createNewScrapbook('My First Scrapbook')
     setShowWelcome(false)
+  }
+
+  const handleDebugSave = () => {
+    console.log('Current scrapbook state:', currentScrapbook)
+    checkSavedData()
   }
 
   if (showWelcome) {
@@ -23,9 +28,7 @@ const ScrapbookEditor: React.FC = () => {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#f6f1ee' }}>
         <div className="text-center p-8 max-w-md mx-4 rounded-2xl shadow-xl border-2 scrapp-panel">
           <div className="mb-6">
-            <div className="scrapp-logo text-3xl mb-4">
-              SCRAPP
-            </div>
+            <div className="scrapp-logo text-3xl mb-4">SCRAPP</div>
             <div className="w-16 h-16 mx-auto mb-4 rounded-full border-4 scrapp-icon-btn">
               <span className="text-2xl">📸</span>
             </div>
@@ -49,7 +52,6 @@ const ScrapbookEditor: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col" style={{ backgroundColor: '#f6f1ee' }}>
-      {/* Minimal Header */}
       <header className="p-3 border-b-2 flex items-center justify-between" style={{ backgroundColor: '#9eb492', borderColor: '#3f473b' }}>
         <div className="flex items-center space-x-3">
           <div className="scrapp-icon-btn">
@@ -64,19 +66,29 @@ const ScrapbookEditor: React.FC = () => {
           <MusicIntegration />
           <PageNavigator />
           <ShareButton />
+          {/* Debug button */}
+          <button
+            onClick={handleDebugSave}
+            className="p-2 border-2 transition-all duration-200 hover:scale-105"
+            style={{ 
+              backgroundColor: '#3f473b', 
+              color: '#f6f1ee',
+              borderColor: '#3f473b'
+            }}
+            title="Debug Save"
+          >
+            <span className="text-xs font-bold">🐛</span>
+          </button>
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="flex-1 flex">
-        {/* Minimal Left Sidebar */}
         <div className="w-64 p-3 space-y-4 border-r-2 scrapp-scrollbar" style={{ backgroundColor: '#9eb492', borderColor: '#3f473b' }}>
           <PhotoUploader />
           <Toolbar />
           <StickerPanel />
         </div>
 
-        {/* Center Canvas */}
         <div className="flex-1 p-3">
           <ScrapbookCanvas />
         </div>

@@ -25,6 +25,7 @@ interface ScrapbookState {
   setSelectedElement: (element: string | null) => void
   saveScrapbook: () => void
   loadScrapbook: (scrapbookId: string) => void
+  checkSavedData: () => void
   exportScrapbook: () => Scrapbook | null
 }
 
@@ -70,7 +71,8 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
 
     set({ currentScrapbook: updatedScrapbook })
     
-    // Auto-save to localStorage
+    // Auto-save to localStorage with debugging
+    console.log('Saving scrapbook with photo:', updatedScrapbook)
     localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
@@ -89,7 +91,8 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
 
     set({ currentScrapbook: updatedScrapbook })
     
-    // Auto-save to localStorage
+    // Auto-save to localStorage with debugging
+    console.log('Saving scrapbook with sticker:', updatedScrapbook)
     localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
@@ -108,7 +111,8 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
 
     set({ currentScrapbook: updatedScrapbook })
     
-    // Auto-save to localStorage
+    // Auto-save to localStorage with debugging
+    console.log('Saving scrapbook with text element:', updatedScrapbook)
     localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
@@ -127,7 +131,8 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
 
     set({ currentScrapbook: updatedScrapbook })
     
-    // Auto-save to localStorage
+    // Auto-save to localStorage with debugging
+    console.log('Saving scrapbook with background color:', updatedScrapbook)
     localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
   },
 
@@ -388,11 +393,31 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     if (savedScrapbook) {
       try {
         const scrapbook = JSON.parse(savedScrapbook)
+        console.log('Loading scrapbook:', scrapbook)
         set({ currentScrapbook: scrapbook, currentPageIndex: 0 })
       } catch (error) {
         console.error('Failed to load scrapbook:', error)
       }
+    } else {
+      console.log('No saved scrapbook found for ID:', scrapbookId)
     }
+  },
+
+  // Method to check what's saved in localStorage
+  checkSavedData: () => {
+    const keys = Object.keys(localStorage).filter(key => key.startsWith('scrapp_'))
+    console.log('Saved scrapbook keys:', keys)
+    keys.forEach(key => {
+      const data = localStorage.getItem(key)
+      if (data) {
+        try {
+          const scrapbook = JSON.parse(data)
+          console.log(`Scrapbook ${key}:`, scrapbook)
+        } catch (error) {
+          console.error(`Failed to parse ${key}:`, error)
+        }
+      }
+    })
   },
 
   exportScrapbook: () => {
