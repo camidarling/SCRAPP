@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useScrapbookStore } from '../store/ScrapbookStore'
 import { Photo } from '../types'
-import { Edit3, Trash2, RotateCw, Move } from 'lucide-react'
 
 interface PhotoElementProps {
   photo: Photo
@@ -16,7 +15,7 @@ const PhotoElement: React.FC<PhotoElementProps> = ({ photo, isDragging = false, 
   const [isResizing, setIsResizing] = useState(false)
   const [resizeStart, setResizeStart] = useState({ width: 0, height: 0, x: 0, y: 0 })
 
-  const isSelected = selectedElement?.id === photo.id
+  const isSelected = selectedElement === photo.id
 
   const handleDoubleClick = () => {
     setIsEditing(true)
@@ -39,7 +38,7 @@ const PhotoElement: React.FC<PhotoElementProps> = ({ photo, isDragging = false, 
     if (onMouseDown) {
       onMouseDown(e)
     }
-    setSelectedElement(photo)
+    setSelectedElement(photo.id)
   }
 
   const handleResizeStart = (e: React.MouseEvent) => {
@@ -53,7 +52,7 @@ const PhotoElement: React.FC<PhotoElementProps> = ({ photo, isDragging = false, 
     })
   }
 
-  const handleResize = (e: React.MouseEvent) => {
+  const handleResize = (e: MouseEvent) => {
     if (!isResizing) return
 
     const deltaX = e.clientX - resizeStart.x
@@ -80,7 +79,7 @@ const PhotoElement: React.FC<PhotoElementProps> = ({ photo, isDragging = false, 
   useEffect(() => {
     if (isResizing) {
       const handleGlobalMouseMove = (e: MouseEvent) => {
-        handleResize(e as any)
+        handleResize(e)
       }
       const handleGlobalMouseUp = () => {
         handleResizeEnd()
@@ -159,7 +158,8 @@ const PhotoElement: React.FC<PhotoElementProps> = ({ photo, isDragging = false, 
       {/* Resize Handle */}
       {isSelected && (
         <div 
-          className="absolute -bottom-2 -right-2 w-4 h-4 bg-retro-primary border-2 border-retro-dark cursor-se-resize hover:bg-retro-primary-light transition-colors duration-200"
+          className="absolute -bottom-2 -right-2 w-4 h-4 bg-white border-2 cursor-se-resize hover:bg-gray-100 transition-colors duration-200"
+          style={{ borderColor: '#3f473b' }}
           onMouseDown={handleResizeStart}
           title="Resize"
         />
@@ -173,21 +173,21 @@ const PhotoElement: React.FC<PhotoElementProps> = ({ photo, isDragging = false, 
             className="bg-white p-1 rounded shadow hover:bg-gray-50"
             title="Rotate"
           >
-            <RotateCw className="h-4 w-4 text-gray-600" />
+            <span className="text-xs">🔄</span>
           </button>
           <button
             onClick={handleDoubleClick}
             className="bg-white p-1 rounded shadow hover:bg-gray-50"
             title="Edit Caption"
           >
-            <Edit3 className="h-4 w-4 text-gray-600" />
+            <span className="text-xs">✏️</span>
           </button>
           <button
             onClick={handleDelete}
             className="bg-white p-1 rounded shadow hover:bg-red-50"
             title="Delete"
           >
-            <Trash2 className="h-4 w-4 text-red-600" />
+            <span className="text-xs">🗑️</span>
           </button>
         </div>
       )}

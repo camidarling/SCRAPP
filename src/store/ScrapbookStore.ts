@@ -16,6 +16,13 @@ interface ScrapbookState {
   addPage: () => void
   deletePage: (pageIndex: number) => void
   updateElementPosition: (elementId: string, elementType: 'photo' | 'sticker' | 'text', position: { x: number; y: number }) => void
+  updatePhoto: (photoId: string, updates: Partial<Photo>) => void
+  removePhoto: (photoId: string) => void
+  updateSticker: (stickerId: string, updates: Partial<Sticker>) => void
+  removeSticker: (stickerId: string) => void
+  updateTextElement: (textId: string, updates: Partial<TextElement>) => void
+  removeTextElement: (textId: string) => void
+  setSelectedElement: (element: string | null) => void
   saveScrapbook: () => void
   loadScrapbook: (scrapbookId: string) => void
   exportScrapbook: () => Scrapbook | null
@@ -225,6 +232,142 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     
     // Auto-save to localStorage
     localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
+  },
+
+  updatePhoto: (photoId: string, updates: Partial<Photo>) => {
+    const { currentScrapbook, currentPageIndex } = get()
+    if (!currentScrapbook) return
+
+    const updatedPages = [...currentScrapbook.pages]
+    const page = updatedPages[currentPageIndex]
+    const photoIndex = page.photos.findIndex((p: Photo) => p.id === photoId)
+    
+    if (photoIndex !== -1) {
+      page.photos[photoIndex] = { ...page.photos[photoIndex], ...updates }
+      
+      const updatedScrapbook = {
+        ...currentScrapbook,
+        pages: updatedPages,
+        updatedAt: new Date()
+      }
+
+      set({ currentScrapbook: updatedScrapbook })
+      
+      // Auto-save to localStorage
+      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
+    }
+  },
+
+  removePhoto: (photoId: string) => {
+    const { currentScrapbook, currentPageIndex } = get()
+    if (!currentScrapbook) return
+
+    const updatedPages = [...currentScrapbook.pages]
+    const page = updatedPages[currentPageIndex]
+    page.photos = page.photos.filter((p: Photo) => p.id !== photoId)
+    
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
+
+    set({ currentScrapbook: updatedScrapbook })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
+  },
+
+  updateSticker: (stickerId: string, updates: Partial<Sticker>) => {
+    const { currentScrapbook, currentPageIndex } = get()
+    if (!currentScrapbook) return
+
+    const updatedPages = [...currentScrapbook.pages]
+    const page = updatedPages[currentPageIndex]
+    const stickerIndex = page.stickers.findIndex((s: Sticker) => s.id === stickerId)
+    
+    if (stickerIndex !== -1) {
+      page.stickers[stickerIndex] = { ...page.stickers[stickerIndex], ...updates }
+      
+      const updatedScrapbook = {
+        ...currentScrapbook,
+        pages: updatedPages,
+        updatedAt: new Date()
+      }
+
+      set({ currentScrapbook: updatedScrapbook })
+      
+      // Auto-save to localStorage
+      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
+    }
+  },
+
+  removeSticker: (stickerId: string) => {
+    const { currentScrapbook, currentPageIndex } = get()
+    if (!currentScrapbook) return
+
+    const updatedPages = [...currentScrapbook.pages]
+    const page = updatedPages[currentPageIndex]
+    page.stickers = page.stickers.filter((s: Sticker) => s.id !== stickerId)
+    
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
+
+    set({ currentScrapbook: updatedScrapbook })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
+  },
+
+  updateTextElement: (textId: string, updates: Partial<TextElement>) => {
+    const { currentScrapbook, currentPageIndex } = get()
+    if (!currentScrapbook) return
+
+    const updatedPages = [...currentScrapbook.pages]
+    const page = updatedPages[currentPageIndex]
+    const textIndex = page.textElements.findIndex((t: TextElement) => t.id === textId)
+    
+    if (textIndex !== -1) {
+      page.textElements[textIndex] = { ...page.textElements[textIndex], ...updates }
+      
+      const updatedScrapbook = {
+        ...currentScrapbook,
+        pages: updatedPages,
+        updatedAt: new Date()
+      }
+
+      set({ currentScrapbook: updatedScrapbook })
+      
+      // Auto-save to localStorage
+      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
+    }
+  },
+
+  removeTextElement: (textId: string) => {
+    const { currentScrapbook, currentPageIndex } = get()
+    if (!currentScrapbook) return
+
+    const updatedPages = [...currentScrapbook.pages]
+    const page = updatedPages[currentPageIndex]
+    page.textElements = page.textElements.filter((t: TextElement) => t.id !== textId)
+    
+    const updatedScrapbook = {
+      ...currentScrapbook,
+      pages: updatedPages,
+      updatedAt: new Date()
+    }
+
+    set({ currentScrapbook: updatedScrapbook })
+    
+    // Auto-save to localStorage
+    localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
+  },
+
+  setSelectedElement: (element: string | null) => {
+    set({ selectedElement: element })
   },
 
   saveScrapbook: () => {
