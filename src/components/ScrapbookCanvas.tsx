@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useScrapbookStore } from '../store/ScrapbookStore'
 import PhotoElement from './PhotoElement'
-import EmbellishmentElement from './EmbellishmentElement'
+import StickerElement from './StickerElement'
 import TextElement from './TextElement'
 
 const ScrapbookCanvas: React.FC = () => {
@@ -31,8 +31,8 @@ const ScrapbookCanvas: React.FC = () => {
           if (draggedElement && currentPage) {
             if (currentPage.photos.find((p: any) => p.id === draggedElement)) {
               updateElementPosition(draggedElement, 'photo', { x: constrainedX, y: constrainedY })
-            } else if (currentPage.embellishments.find((e: any) => e.id === draggedElement)) {
-              updateElementPosition(draggedElement, 'embellishment', { x: constrainedX, y: constrainedY })
+            } else if (currentPage.stickers.find((s: any) => s.id === draggedElement)) {
+              updateElementPosition(draggedElement, 'sticker', { x: constrainedX, y: constrainedY })
             } else if (currentPage.textElements.find((t: any) => t.id === draggedElement)) {
               updateElementPosition(draggedElement, 'text', { x: constrainedX, y: constrainedY })
             }
@@ -54,7 +54,7 @@ const ScrapbookCanvas: React.FC = () => {
       document.removeEventListener('mousemove', handleMouseMove)
       document.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [draggedElement, dragOffset])
+  }, [draggedElement, dragOffset, currentPage, updateElementPosition])
 
   const handleMouseDown = (elementId: string, e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -123,17 +123,15 @@ const ScrapbookCanvas: React.FC = () => {
               onMouseDown={(e) => handleMouseDown(photo.id, e)}
             />
           ))}
-
-          {/* Embellishments */}
-          {currentPage.embellishments.map((embellishment) => (
-            <EmbellishmentElement
-              key={embellishment.id}
-              embellishment={embellishment}
-              isDragging={draggedElement === embellishment.id}
-              onMouseDown={(e) => handleMouseDown(embellishment.id, e)}
+          {/* Stickers */}
+          {currentPage.stickers.map((sticker) => (
+            <StickerElement
+              key={sticker.id}
+              sticker={sticker}
+              isDragging={draggedElement === sticker.id}
+              onMouseDown={(e) => handleMouseDown(sticker.id, e)}
             />
           ))}
-
           {/* Text Elements */}
           {currentPage.textElements.map((textElement) => (
             <TextElement

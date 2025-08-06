@@ -3,7 +3,7 @@ import { useScrapbookStore } from '../store/ScrapbookStore'
 import PhotoUploader from './PhotoUploader'
 import ScrapbookCanvas from './ScrapbookCanvas'
 import Toolbar from './Toolbar'
-import EmbellishmentPanel from './EmbellishmentPanel'
+import StickerPanel from './StickerPanel'
 import PageNavigator from './PageNavigator'
 import ShareButton from './ShareButton'
 import MusicIntegration from './MusicIntegration'
@@ -73,7 +73,7 @@ const ScrapbookEditor: React.FC = () => {
         <div className="w-64 p-3 space-y-4 border-r-2 scrapp-scrollbar" style={{ backgroundColor: '#9eb492', borderColor: '#3f473b' }}>
           <PhotoUploader />
           <Toolbar />
-          <EmbellishmentPanel />
+          <StickerPanel />
         </div>
 
         {/* Center Canvas */}

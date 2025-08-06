@@ -8,9 +8,9 @@ export interface Photo {
   caption?: string
 }
 
-export interface Embellishment {
+export interface Sticker {
   id: string
-  type: 'sticker' | 'icon' | 'decoration'
+  type: 'gem' | 'shell' | 'decoration'
   name: string
   modelUrl?: string
   iconUrl?: string
@@ -43,7 +43,7 @@ export interface ScrapbookPage {
   id: string
   title?: string
   photos: Photo[]
-  embellishments: Embellishment[]
+  stickers: Sticker[]
   textElements: TextElement[]
   backgroundColor: string
   backgroundImage?: string
@@ -78,6 +78,6 @@ export interface BackgroundTheme {
 }
 
 export interface DragItem {
-  type: 'photo' | 'embellishment' | 'text'
-  data: Photo | Embellishment | TextElement
+  type: 'photo' | 'sticker' | 'text'
+  data: Photo | Sticker | TextElement
 } 

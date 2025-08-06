@@ -1,76 +1,45 @@
 import { create } from 'zustand'
-import { Scrapbook, ScrapbookPage, Photo, Embellishment, TextElement } from '../types'
+import { Scrapbook, ScrapbookPage, Photo, Sticker, TextElement } from '../types'
 
 interface ScrapbookState {
   currentScrapbook: Scrapbook | null
   currentPageIndex: number
-  uploadedPhotos: Photo[]
-  selectedElement: Photo | Embellishment | TextElement | null
-  isPlaying: boolean
-  
+  selectedElement: string | null
+
   // Actions
   createNewScrapbook: (title: string) => void
-  addPage: () => void
-  setCurrentPage: (index: number) => void
   addPhoto: (photo: Photo) => void
-  updatePhoto: (id: string, updates: Partial<Photo>) => void
-  removePhoto: (id: string) => void
-  addEmbellishment: (embellishment: Embellishment) => void
-  updateEmbellishment: (id: string, updates: Partial<Embellishment>) => void
-  removeEmbellishment: (id: string) => void
-  addTextElement: (text: TextElement) => void
-  updateTextElement: (id: string, updates: Partial<TextElement>) => void
-  removeTextElement: (id: string) => void
+  addSticker: (sticker: Sticker) => void
+  addTextElement: (textElement: TextElement) => void
   setBackgroundColor: (color: string) => void
-  setSelectedElement: (element: Photo | Embellishment | TextElement | null) => void
-  setUploadedPhotos: (photos: Photo[]) => void
-  setIsPlaying: (playing: boolean) => void
-  updateElementPosition: (elementId: string, elementType: 'photo' | 'embellishment' | 'text', position: { x: number; y: number }) => void
+  setCurrentPage: (pageIndex: number) => void
+  addPage: () => void
+  deletePage: (pageIndex: number) => void
+  updateElementPosition: (elementId: string, elementType: 'photo' | 'sticker' | 'text', position: { x: number; y: number }) => void
 }
-
-const createInitialPage = (): ScrapbookPage => ({
-  id: crypto.randomUUID(),
-  photos: [],
-  embellishments: [],
-  textElements: [],
-  backgroundColor: '#faf7f0'
-})
 
 export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
   currentScrapbook: null,
   currentPageIndex: 0,
-  uploadedPhotos: [],
   selectedElement: null,
-  isPlaying: false,
 
   createNewScrapbook: (title: string) => {
     const newScrapbook: Scrapbook = {
-      id: crypto.randomUUID(),
+      id: Date.now().toString(),
       title,
-      pages: [createInitialPage()],
+      pages: [
+        {
+          id: '1',
+          photos: [],
+          stickers: [],
+          textElements: [],
+          backgroundColor: '#f6f1ee'
+        }
+      ],
       createdAt: new Date(),
       updatedAt: new Date()
     }
     set({ currentScrapbook: newScrapbook, currentPageIndex: 0 })
-  },
-
-  addPage: () => {
-    const { currentScrapbook } = get()
-    if (!currentScrapbook) return
-
-    const newPage = createInitialPage()
-    const updatedScrapbook = {
-      ...currentScrapbook,
-      pages: [...currentScrapbook.pages, newPage],
-      updatedAt: new Date()
-    }
-    set({ currentScrapbook: updatedScrapbook })
-  },
-
-  setCurrentPage: (index: number) => {
-    const { currentScrapbook } = get()
-    if (!currentScrapbook || index < 0 || index >= currentScrapbook.pages.length) return
-    set({ currentPageIndex: index })
   },
 
   addPhoto: (photo: Photo) => {
@@ -78,10 +47,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     if (!currentScrapbook) return
 
     const updatedPages = [...currentScrapbook.pages]
-    updatedPages[currentPageIndex] = {
-      ...updatedPages[currentPageIndex],
-      photos: [...updatedPages[currentPageIndex].photos, photo]
-    }
+    updatedPages[currentPageIndex].photos.push(photo)
 
     set({
       currentScrapbook: {
@@ -92,35 +58,12 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     })
   },
 
-  updatePhoto: (id: string, updates: Partial<Photo>) => {
+  addSticker: (sticker: Sticker) => {
     const { currentScrapbook, currentPageIndex } = get()
     if (!currentScrapbook) return
 
     const updatedPages = [...currentScrapbook.pages]
-    const page = updatedPages[currentPageIndex]
-    const photoIndex = page.photos.findIndex((p: Photo) => p.id === id)
-    
-    if (photoIndex !== -1) {
-      page.photos[photoIndex] = { ...page.photos[photoIndex], ...updates }
-      set({
-        currentScrapbook: {
-          ...currentScrapbook,
-          pages: updatedPages,
-          updatedAt: new Date()
-        }
-      })
-    }
-  },
-
-  removePhoto: (id: string) => {
-    const { currentScrapbook, currentPageIndex } = get()
-    if (!currentScrapbook) return
-
-    const updatedPages = [...currentScrapbook.pages]
-    updatedPages[currentPageIndex] = {
-      ...updatedPages[currentPageIndex],
-      photos: updatedPages[currentPageIndex].photos.filter((p: Photo) => p.id !== id)
-    }
+    updatedPages[currentPageIndex].stickers.push(sticker)
 
     set({
       currentScrapbook: {
@@ -131,112 +74,12 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     })
   },
 
-  addEmbellishment: (embellishment: Embellishment) => {
+  addTextElement: (textElement: TextElement) => {
     const { currentScrapbook, currentPageIndex } = get()
     if (!currentScrapbook) return
 
     const updatedPages = [...currentScrapbook.pages]
-    updatedPages[currentPageIndex] = {
-      ...updatedPages[currentPageIndex],
-      embellishments: [...updatedPages[currentPageIndex].embellishments, embellishment]
-    }
-
-    set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
-      }
-    })
-  },
-
-  updateEmbellishment: (id: string, updates: Partial<Embellishment>) => {
-    const { currentScrapbook, currentPageIndex } = get()
-    if (!currentScrapbook) return
-
-    const updatedPages = [...currentScrapbook.pages]
-    const page = updatedPages[currentPageIndex]
-    const embellishmentIndex = page.embellishments.findIndex((e: Embellishment) => e.id === id)
-    
-    if (embellishmentIndex !== -1) {
-      page.embellishments[embellishmentIndex] = { ...page.embellishments[embellishmentIndex], ...updates }
-      set({
-        currentScrapbook: {
-          ...currentScrapbook,
-          pages: updatedPages,
-          updatedAt: new Date()
-        }
-      })
-    }
-  },
-
-  removeEmbellishment: (id: string) => {
-    const { currentScrapbook, currentPageIndex } = get()
-    if (!currentScrapbook) return
-
-    const updatedPages = [...currentScrapbook.pages]
-    updatedPages[currentPageIndex] = {
-      ...updatedPages[currentPageIndex],
-      embellishments: updatedPages[currentPageIndex].embellishments.filter((e: Embellishment) => e.id !== id)
-    }
-
-    set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
-      }
-    })
-  },
-
-  addTextElement: (text: TextElement) => {
-    const { currentScrapbook, currentPageIndex } = get()
-    if (!currentScrapbook) return
-
-    const updatedPages = [...currentScrapbook.pages]
-    updatedPages[currentPageIndex] = {
-      ...updatedPages[currentPageIndex],
-      textElements: [...updatedPages[currentPageIndex].textElements, text]
-    }
-
-    set({
-      currentScrapbook: {
-        ...currentScrapbook,
-        pages: updatedPages,
-        updatedAt: new Date()
-      }
-    })
-  },
-
-  updateTextElement: (id: string, updates: Partial<TextElement>) => {
-    const { currentScrapbook, currentPageIndex } = get()
-    if (!currentScrapbook) return
-
-    const updatedPages = [...currentScrapbook.pages]
-    const page = updatedPages[currentPageIndex]
-    const textIndex = page.textElements.findIndex((t: TextElement) => t.id === id)
-    
-    if (textIndex !== -1) {
-      page.textElements[textIndex] = { ...page.textElements[textIndex], ...updates }
-      set({
-        currentScrapbook: {
-          ...currentScrapbook,
-          pages: updatedPages,
-          updatedAt: new Date()
-        }
-      })
-    }
-  },
-
-  removeTextElement: (id: string) => {
-    const { currentScrapbook, currentPageIndex } = get()
-    if (!currentScrapbook) return
-
-    const updatedPages = [...currentScrapbook.pages]
-    updatedPages[currentPageIndex] = {
-      ...updatedPages[currentPageIndex],
-      textElements: updatedPages[currentPageIndex].textElements.filter((t: TextElement) => t.id !== id)
-    }
+    updatedPages[currentPageIndex].textElements.push(textElement)
 
     set({
       currentScrapbook: {
@@ -252,10 +95,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     if (!currentScrapbook) return
 
     const updatedPages = [...currentScrapbook.pages]
-    updatedPages[currentPageIndex] = {
-      ...updatedPages[currentPageIndex],
-      backgroundColor: color
-    }
+    updatedPages[currentPageIndex].backgroundColor = color
 
     set({
       currentScrapbook: {
@@ -266,19 +106,66 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     })
   },
 
-  setSelectedElement: (element) => {
-    set({ selectedElement: element })
+  setCurrentPage: (pageIndex: number) => {
+    const { currentScrapbook } = get()
+    if (!currentScrapbook || pageIndex < 0 || pageIndex >= currentScrapbook.pages.length) return
+    set({ currentPageIndex: pageIndex })
   },
 
-  setUploadedPhotos: (photos) => {
-    set({ uploadedPhotos: photos })
+  addPage: () => {
+    const { currentScrapbook } = get()
+    if (!currentScrapbook) return
+
+    const newPage: ScrapbookPage = {
+      id: (currentScrapbook.pages.length + 1).toString(),
+      photos: [],
+      stickers: [],
+      textElements: [],
+      backgroundColor: '#f6f1ee'
+    }
+
+    const updatedPages = [...currentScrapbook.pages, newPage]
+
+    set({
+      currentScrapbook: {
+        ...currentScrapbook,
+        pages: updatedPages,
+        updatedAt: new Date()
+      },
+      currentPageIndex: updatedPages.length - 1
+    })
   },
 
-  setIsPlaying: (playing) => {
-    set({ isPlaying: playing })
+  deletePage: (pageIndex: number) => {
+    const { currentScrapbook } = get()
+    if (!currentScrapbook || pageIndex < 0 || pageIndex >= currentScrapbook.pages.length) return
+
+    const updatedPages = currentScrapbook.pages.filter((_, index) => index !== pageIndex)
+    
+    if (updatedPages.length === 0) {
+      // If no pages left, create a new one
+      updatedPages.push({
+        id: '1',
+        photos: [],
+        stickers: [],
+        textElements: [],
+        backgroundColor: '#f6f1ee'
+      })
+    }
+
+    const newCurrentPageIndex = Math.min(pageIndex, updatedPages.length - 1)
+
+    set({
+      currentScrapbook: {
+        ...currentScrapbook,
+        pages: updatedPages,
+        updatedAt: new Date()
+      },
+      currentPageIndex: newCurrentPageIndex
+    })
   },
 
-  updateElementPosition: (elementId: string, elementType: 'photo' | 'embellishment' | 'text', position: { x: number; y: number }) => {
+  updateElementPosition: (elementId: string, elementType: 'photo' | 'sticker' | 'text', position: { x: number; y: number }) => {
     const { currentScrapbook, currentPageIndex } = get()
     if (!currentScrapbook) return
 
@@ -290,10 +177,10 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
       if (photoIndex !== -1) {
         page.photos[photoIndex] = { ...page.photos[photoIndex], position }
       }
-    } else if (elementType === 'embellishment') {
-      const embellishmentIndex = page.embellishments.findIndex((e: Embellishment) => e.id === elementId)
-      if (embellishmentIndex !== -1) {
-        page.embellishments[embellishmentIndex] = { ...page.embellishments[embellishmentIndex], position }
+    } else if (elementType === 'sticker') {
+      const stickerIndex = page.stickers.findIndex((s: Sticker) => s.id === elementId)
+      if (stickerIndex !== -1) {
+        page.stickers[stickerIndex] = { ...page.stickers[stickerIndex], position }
       }
     } else if (elementType === 'text') {
       const textIndex = page.textElements.findIndex((t: TextElement) => t.id === elementId)
