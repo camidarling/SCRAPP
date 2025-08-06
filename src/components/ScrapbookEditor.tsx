@@ -9,15 +9,8 @@ import MusicIntegration from './MusicIntegration'
 import { useScrapbookStore } from '../store/ScrapbookStore'
 
 const ScrapbookEditor: React.FC = () => {
-  const { currentScrapbook, currentPageIndex, createNewScrapbook, isInitialized, initializeStore } = useScrapbookStore()
+  const { currentScrapbook, currentPageIndex, createNewScrapbook } = useScrapbookStore()
   const [showWelcome, setShowWelcome] = useState(!currentScrapbook)
-
-  // Initialize store on component mount
-  useEffect(() => {
-    if (!isInitialized) {
-      initializeStore()
-    }
-  }, [isInitialized, initializeStore])
 
   // Update welcome screen state when scrapbook changes
   useEffect(() => {
