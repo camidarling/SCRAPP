@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Canvas } from '@react-three/fiber'
 import PhotoUploader from './PhotoUploader'
 import ScrapbookCanvas from './ScrapbookCanvas'
 import Toolbar from './Toolbar'
@@ -10,17 +9,12 @@ import MusicIntegration from './MusicIntegration'
 import { useScrapbookStore } from '../store/ScrapbookStore'
 
 const ScrapbookEditor: React.FC = () => {
-  const { currentScrapbook, currentPageIndex, createNewScrapbook, checkSavedData } = useScrapbookStore()
+  const { currentScrapbook, currentPageIndex, createNewScrapbook } = useScrapbookStore()
   const [showWelcome, setShowWelcome] = useState(!currentScrapbook)
 
   const handleCreateNew = () => {
     createNewScrapbook('My First Scrapbook')
     setShowWelcome(false)
-  }
-
-  const handleDebugSave = () => {
-    console.log('Current scrapbook state:', currentScrapbook)
-    checkSavedData()
   }
 
   if (showWelcome) {
@@ -34,7 +28,7 @@ const ScrapbookEditor: React.FC = () => {
             </div>
           </div>
           <p className="font-coolvetica text-lg mb-8 leading-relaxed" style={{ color: '#3f473b' }}>
-            Create beautiful digital scrapbooks with photos, text, and 3D embellishments
+            Create beautiful digital scrapbooks with photos, text, and stickers
           </p>
           <button
             onClick={handleCreateNew}
@@ -66,19 +60,6 @@ const ScrapbookEditor: React.FC = () => {
           <MusicIntegration />
           <PageNavigator />
           <ShareButton />
-          {/* Debug button */}
-          <button
-            onClick={handleDebugSave}
-            className="p-2 border-2 transition-all duration-200 hover:scale-105"
-            style={{ 
-              backgroundColor: '#3f473b', 
-              color: '#f6f1ee',
-              borderColor: '#3f473b'
-            }}
-            title="Debug Save"
-          >
-            <span className="text-xs font-bold">🐛</span>
-          </button>
         </div>
       </header>
 
