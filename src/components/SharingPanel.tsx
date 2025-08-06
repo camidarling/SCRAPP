@@ -16,7 +16,7 @@ interface SharingPanelProps {
 }
 
 const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
-  const { currentScrapbook, currentPageIndex, exportScrapbook } = useScrapbookStore()
+  const { currentScrapbook, currentPageIndex } = useScrapbookStore()
   const [isExporting, setIsExporting] = useState(false)
   const [shareType, setShareType] = useState<'page' | 'book'>('page')
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -541,7 +541,7 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                     className="w-full h-full object-contain"
                     style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                     crossOrigin="anonymous"
-                    onError={(e) => console.error('Sticker image failed to load:', sticker.iconUrl)}
+                    onError={() => console.error('Sticker image failed to load:', sticker.iconUrl)}
                     onLoad={() => console.log('Sticker image loaded:', sticker.iconUrl)}
                   />
                 </div>

@@ -56,7 +56,6 @@ const PhotoElement: React.FC<PhotoElementProps> = ({ photo, isDragging = false, 
     if (!isResizing) return
 
     const deltaX = e.clientX - resizeStart.x
-    const deltaY = e.clientY - resizeStart.y
     
     // Calculate new size (maintain aspect ratio)
     const aspectRatio = photo.size.width / photo.size.height

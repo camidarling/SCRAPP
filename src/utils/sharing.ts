@@ -118,10 +118,9 @@ export const formatShareText = (title: string, platform: string): string => {
 }
 
 // Generate QR code data URL
-export const generateQRCodeDataURL = (url: string): string => {
-  // This would use a QR code library like qrcode.js
-  // For now, return a placeholder
-  return `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==`
+export const generateQRCodeDataURL = (): string => {
+  // Placeholder for QR code generation
+  return ''
 }
 
 // All functions are already exported above 

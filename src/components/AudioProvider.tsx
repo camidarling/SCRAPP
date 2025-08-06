@@ -1,20 +1,23 @@
-import React, { useEffect } from 'react'
-import { useScrapbookStore } from '../store/ScrapbookStore'
+import React, { createContext, useContext, ReactNode } from 'react'
 
-const AudioProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isPlaying } = useScrapbookStore()
-
-  useEffect(() => {
-    // Audio functionality will be implemented here
-    // For now, just a placeholder for the audio context
-    if (isPlaying) {
-      console.log('Audio playing...')
-    } else {
-      console.log('Audio paused...')
-    }
-  }, [isPlaying])
-
-  return <>{children}</>
+interface AudioContextType {
+  // Add audio-related methods here when needed
 }
 
-export default AudioProvider 
+const AudioContext = createContext<AudioContextType | null>(null)
+
+export const AudioProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  return (
+    <AudioContext.Provider value={{}}>
+      {children}
+    </AudioContext.Provider>
+  )
+}
+
+export const useAudio = () => {
+  const context = useContext(AudioContext)
+  if (!context) {
+    throw new Error('useAudio must be used within an AudioProvider')
+  }
+  return context
+} 

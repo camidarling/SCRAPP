@@ -9,7 +9,7 @@ import MusicIntegration from './MusicIntegration'
 import { useScrapbookStore } from '../store/ScrapbookStore'
 
 const ScrapbookEditor: React.FC = () => {
-  const { currentScrapbook, currentPageIndex, createNewScrapbook } = useScrapbookStore()
+  const { currentScrapbook, createNewScrapbook } = useScrapbookStore()
   const [showWelcome, setShowWelcome] = useState(!currentScrapbook)
 
   // Update welcome screen state when scrapbook changes

@@ -14,7 +14,7 @@ const TextElement: React.FC<TextElementProps> = ({ textElement, isDragging = fal
   const [isEditing, setIsEditing] = useState(false)
   const [content, setContent] = useState(textElement.content)
 
-  const isSelected = selectedElement?.id === textElement.id
+  const isSelected = selectedElement === textElement.id
 
   const handleDoubleClick = () => {
     setIsEditing(true)
@@ -37,7 +37,7 @@ const TextElement: React.FC<TextElementProps> = ({ textElement, isDragging = fal
     if (onMouseDown) {
       onMouseDown(e)
     }
-    setSelectedElement(textElement)
+    setSelectedElement(textElement.id)
   }
 
   const handleResize = (direction: 'increase' | 'decrease') => {

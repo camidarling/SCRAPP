@@ -37,7 +37,6 @@ const StickerElement: React.FC<StickerElementProps> = ({ sticker, isDragging, on
     if (!isResizing) return
 
     const deltaX = e.clientX - resizeStart.x
-    const deltaY = e.clientY - resizeStart.y
     
     // Calculate new size (maintain aspect ratio)
     const aspectRatio = sticker.size.width / sticker.size.height
