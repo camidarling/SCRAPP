@@ -30,13 +30,26 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
     
     setIsExporting(true)
     try {
+      // Wait a bit for images to load
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       const canvas = await html2canvas(canvasRef.current, {
         backgroundColor: currentPage.backgroundColor || '#f6f1ee',
         scale: 2,
         useCORS: true,
         allowTaint: true,
         width: 800,
-        height: 800
+        height: 800,
+        logging: true, // Enable logging to debug
+        onclone: (clonedDoc) => {
+          // Ensure all images are loaded in the cloned document
+          const images = clonedDoc.querySelectorAll('img')
+          images.forEach(img => {
+            if (img.complete === false) {
+              console.log('Image not loaded:', img.src)
+            }
+          })
+        }
       })
       
       // Add watermark
@@ -65,13 +78,26 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
     
     setIsExporting(true)
     try {
+      // Wait a bit for images to load
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
       const canvas = await html2canvas(canvasRef.current, {
         backgroundColor: currentPage.backgroundColor || '#f6f1ee',
         scale: 2,
         useCORS: true,
         allowTaint: true,
         width: 800,
-        height: 800
+        height: 800,
+        logging: true, // Enable logging to debug
+        onclone: (clonedDoc) => {
+          // Ensure all images are loaded in the cloned document
+          const images = clonedDoc.querySelectorAll('img')
+          images.forEach(img => {
+            if (img.complete === false) {
+              console.log('Image not loaded:', img.src)
+            }
+          })
+        }
       })
       
       // Add watermark
@@ -440,7 +466,12 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                 overflow: 'hidden'
               }}
             >
-              {/* Render page content for export */}
+              {/* Debug info */}
+              <div style={{ position: 'absolute', top: '10px', left: '10px', fontSize: '12px', color: 'red', zIndex: 1000 }}>
+                Photos: {currentPage.photos.length} | Stickers: {currentPage.stickers.length} | Text: {currentPage.textElements.length}
+              </div>
+              
+              {/* Render photos for export */}
               {currentPage.photos.map((photo) => (
                 <div
                   key={photo.id}
@@ -459,6 +490,7 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                     alt={photo.name}
                     className="w-full h-full object-cover"
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    crossOrigin="anonymous"
                   />
                   {photo.caption && (
                     <div className="absolute bottom-0 left-0 right-0 bg-white bg-opacity-90 p-2 text-xs">
@@ -468,6 +500,7 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                 </div>
               ))}
               
+              {/* Render text elements for export */}
               {currentPage.textElements.map((text) => (
                 <div
                   key={text.id}
@@ -488,6 +521,7 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                 </div>
               ))}
               
+              {/* Render stickers for export */}
               {currentPage.stickers.map((sticker) => (
                 <div
                   key={sticker.id}
@@ -506,6 +540,9 @@ const SharingPanel: React.FC<SharingPanelProps> = ({ isOpen, onClose }) => {
                     alt={sticker.name}
                     className="w-full h-full object-contain"
                     style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                    crossOrigin="anonymous"
+                    onError={(e) => console.error('Sticker image failed to load:', sticker.iconUrl)}
+                    onLoad={() => console.log('Sticker image loaded:', sticker.iconUrl)}
                   />
                 </div>
               ))}
