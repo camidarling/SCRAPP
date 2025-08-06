@@ -5,13 +5,13 @@ const StickerPanel: React.FC = () => {
   const { addSticker } = useScrapbookStore()
 
   const stickers = [
-    { id: 'gem1', name: 'Gem 1', type: 'gem' as const, iconUrl: '/embellishments/gem1.png' },
-    { id: 'gem2', name: 'Gem 2', type: 'gem' as const, iconUrl: '/embellishments/gem2.png' },
-    { id: 'gem3', name: 'Gem 3', type: 'gem' as const, iconUrl: '/embellishments/gem3.png' },
-    { id: 'gem4', name: 'Gem 4', type: 'gem' as const, iconUrl: '/embellishments/gem4.png' },
-    { id: 'gem5', name: 'Gem 5', type: 'gem' as const, iconUrl: '/embellishments/gem5.png' },
-    { id: 'shell1', name: 'Shell 1', type: 'shell' as const, iconUrl: '/embellishments/shell1.png' },
-    { id: 'shell2', name: 'Shell 2', type: 'shell' as const, iconUrl: '/embellishments/shell2.png' }
+    { id: 'gem1', name: 'Gem 1', type: 'gem' as const, iconUrl: '/SCRAPP/embellishments/gem1.png' },
+    { id: 'gem2', name: 'Gem 2', type: 'gem' as const, iconUrl: '/SCRAPP/embellishments/gem2.png' },
+    { id: 'gem3', name: 'Gem 3', type: 'gem' as const, iconUrl: '/SCRAPP/embellishments/gem3.png' },
+    { id: 'gem4', name: 'Gem 4', type: 'gem' as const, iconUrl: '/SCRAPP/embellishments/gem4.png' },
+    { id: 'gem5', name: 'Gem 5', type: 'gem' as const, iconUrl: '/SCRAPP/embellishments/gem5.png' },
+    { id: 'shell1', name: 'Shell 1', type: 'shell' as const, iconUrl: '/SCRAPP/embellishments/shell1.png' },
+    { id: 'shell2', name: 'Shell 2', type: 'shell' as const, iconUrl: '/SCRAPP/embellishments/shell2.png' }
   ]
 
   const handleAddSticker = (sticker: typeof stickers[0]) => {
