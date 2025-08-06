@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import ScrapbookEditor from './components/ScrapbookEditor'
 import { ScrapbookProvider } from './store/ScrapbookProvider'
 import './index.css'

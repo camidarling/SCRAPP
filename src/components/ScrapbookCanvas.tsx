@@ -60,7 +60,6 @@ const ScrapbookCanvas: React.FC = () => {
     const rect = e.currentTarget.getBoundingClientRect()
     const canvas = document.querySelector('.scrapbook-canvas') as HTMLElement
     if (canvas) {
-      const canvasRect = canvas.getBoundingClientRect()
       setDragOffset({
         x: e.clientX - rect.left,
         y: e.clientY - rect.top
