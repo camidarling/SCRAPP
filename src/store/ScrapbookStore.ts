@@ -5,6 +5,7 @@ interface ScrapbookState {
   currentScrapbook: Scrapbook | null
   currentPageIndex: number
   selectedElement: string | null
+  isInitialized: boolean
 
   // Actions
   createNewScrapbook: (title: string) => void
@@ -26,12 +27,47 @@ interface ScrapbookState {
   saveScrapbook: () => void
   loadScrapbook: (scrapbookId: string) => void
   exportScrapbook: () => Scrapbook | null
+  initializeStore: () => void
+}
+
+// Helper function to save scrapbook to localStorage
+const saveToLocalStorage = (scrapbook: Scrapbook) => {
+  try {
+    localStorage.setItem(`scrapp_${scrapbook.id}`, JSON.stringify(scrapbook))
+    console.log('Successfully saved scrapbook:', scrapbook.id)
+  } catch (error) {
+    console.error('Failed to save scrapbook:', error)
+  }
 }
 
 export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
   currentScrapbook: null,
   currentPageIndex: 0,
   selectedElement: null,
+  isInitialized: false,
+
+  initializeStore: () => {
+    // Try to load the most recent scrapbook from localStorage
+    const keys = Object.keys(localStorage).filter(key => key.startsWith('scrapp_'))
+    if (keys.length > 0) {
+      // Load the most recent scrapbook
+      const mostRecentKey = keys.sort().pop()
+      if (mostRecentKey) {
+        try {
+          const savedData = localStorage.getItem(mostRecentKey)
+          if (savedData) {
+            const scrapbook = JSON.parse(savedData)
+            set({ currentScrapbook: scrapbook, currentPageIndex: 0, isInitialized: true })
+            console.log('Loaded existing scrapbook:', scrapbook.id)
+            return
+          }
+        } catch (error) {
+          console.error('Failed to load existing scrapbook:', error)
+        }
+      }
+    }
+    set({ isInitialized: true })
+  },
 
   createNewScrapbook: (title: string) => {
     const newScrapbook: Scrapbook = {
@@ -50,13 +86,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
       updatedAt: new Date()
     }
     set({ currentScrapbook: newScrapbook, currentPageIndex: 0 })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${newScrapbook.id}`, JSON.stringify(newScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(newScrapbook)
   },
 
   addPhoto: (photo: Photo) => {
@@ -76,13 +106,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     set({ currentScrapbook: updatedScrapbook })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   addSticker: (sticker: Sticker) => {
@@ -102,13 +126,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     set({ currentScrapbook: updatedScrapbook })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   addTextElement: (textElement: TextElement) => {
@@ -128,13 +146,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     set({ currentScrapbook: updatedScrapbook })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   setBackgroundColor: (color: string) => {
@@ -154,13 +166,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     set({ currentScrapbook: updatedScrapbook })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   setCurrentPage: (pageIndex: number) => {
@@ -192,13 +198,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
       currentScrapbook: updatedScrapbook,
       currentPageIndex: updatedPages.length - 1
     })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   deletePage: (pageIndex: number) => {
@@ -229,13 +229,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
       currentScrapbook: updatedScrapbook,
       currentPageIndex: newCurrentPageIndex
     })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   updateElementPosition: (elementId: string, elementType: 'photo' | 'sticker' | 'text', position: { x: number; y: number }) => {
@@ -269,13 +263,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     set({ currentScrapbook: updatedScrapbook })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   updatePhoto: (photoId: string, updates: Partial<Photo>) => {
@@ -296,13 +284,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
       }
 
       set({ currentScrapbook: updatedScrapbook })
-      
-      // Save to localStorage
-      try {
-        localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-      } catch (error) {
-        console.error('Failed to save scrapbook:', error)
-      }
+      saveToLocalStorage(updatedScrapbook)
     }
   },
 
@@ -321,13 +303,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     set({ currentScrapbook: updatedScrapbook })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   updateSticker: (stickerId: string, updates: Partial<Sticker>) => {
@@ -348,13 +324,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
       }
 
       set({ currentScrapbook: updatedScrapbook })
-      
-      // Save to localStorage
-      try {
-        localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-      } catch (error) {
-        console.error('Failed to save scrapbook:', error)
-      }
+      saveToLocalStorage(updatedScrapbook)
     }
   },
 
@@ -373,13 +343,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     set({ currentScrapbook: updatedScrapbook })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   updateTextElement: (textId: string, updates: Partial<TextElement>) => {
@@ -400,13 +364,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
       }
 
       set({ currentScrapbook: updatedScrapbook })
-      
-      // Save to localStorage
-      try {
-        localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-      } catch (error) {
-        console.error('Failed to save scrapbook:', error)
-      }
+      saveToLocalStorage(updatedScrapbook)
     }
   },
 
@@ -425,13 +383,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     set({ currentScrapbook: updatedScrapbook })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   setSelectedElement: (element: string | null) => {
@@ -448,13 +400,7 @@ export const useScrapbookStore = create<ScrapbookState>((set, get) => ({
     }
 
     set({ currentScrapbook: updatedScrapbook })
-    
-    // Save to localStorage
-    try {
-      localStorage.setItem(`scrapp_${currentScrapbook.id}`, JSON.stringify(updatedScrapbook))
-    } catch (error) {
-      console.error('Failed to save scrapbook:', error)
-    }
+    saveToLocalStorage(updatedScrapbook)
   },
 
   loadScrapbook: (scrapbookId: string) => {

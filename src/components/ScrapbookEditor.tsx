@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PhotoUploader from './PhotoUploader'
 import ScrapbookCanvas from './ScrapbookCanvas'
 import Toolbar from './Toolbar'
@@ -9,8 +9,20 @@ import MusicIntegration from './MusicIntegration'
 import { useScrapbookStore } from '../store/ScrapbookStore'
 
 const ScrapbookEditor: React.FC = () => {
-  const { currentScrapbook, currentPageIndex, createNewScrapbook } = useScrapbookStore()
+  const { currentScrapbook, currentPageIndex, createNewScrapbook, isInitialized, initializeStore } = useScrapbookStore()
   const [showWelcome, setShowWelcome] = useState(!currentScrapbook)
+
+  // Initialize store on component mount
+  useEffect(() => {
+    if (!isInitialized) {
+      initializeStore()
+    }
+  }, [isInitialized, initializeStore])
+
+  // Update welcome screen state when scrapbook changes
+  useEffect(() => {
+    setShowWelcome(!currentScrapbook)
+  }, [currentScrapbook])
 
   const handleCreateNew = () => {
     createNewScrapbook('My First Scrapbook')
